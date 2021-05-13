@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {%load static%}
+    <link rel="stylesheet" href="{%static 'css/style.css'%}">
+    <link rel="stylesheet" href="//use.fontawesome.com/releases/v5.0.7/css/all.css">
+</head>
+<body>
+    <div class="container">
+        <div class="upper">
+            <div class="title">
+                <span><i style="color:  #1ca4f4;margin-right:10px;font-size: 1.2rem;" class="fab fa-twitter"></i>
+                </span>
+                <span>Home</span>
+            </div>
+            <form method="POST" enctype="multipart/form-data" action="/add" class='tweet-area'>{% csrf_token %}
+                 <div class="twitter">
+                     <img src="{%static 'img/Dummy.jpg' %}">
+                     <input placeholder="What are you doing?" name='tweet_text'>
+                 </div>
+                 <div>
+                     <input type="file" id="file" name='tweet_image'>
+
+                     <input type="submit" value="Tweet" id='tweet'>
+                 </div>
+                </form>
+        </div>
+        <div class='your-tweets'>
+            {% for tweet in tweets%}
+            <div class='tweet-wrapper'>
+                <div class="profile-area">
+                    <img src="{%static 'img/Dummy.jpg' %}"/>
+                </div>
+                <div class='my-tweet-area'>
+                    <div class='top'>
+                        <span id="name">{{tweet.name}}</span>
+                        <span>{{tweet.username}}</span>
+                        <span>11:20 am</span>
+                    </div>
+                    <div class="mid">
+                        {%if tweet.tweet_text %}
+                        <span>{{tweet.tweet_text}}</span>
+                        {% endif %}
+                        
+                        {%if tweet.tweet_img %}
+                        <img src='{{tweet.tweet_img.url}}'/>
+                        {% endif %}
+                    </div>
+                    <div class="bottom">
+                      <i class="far fa-heart" id='like{{tweet.id}}' onclick="like({{tweet.id}})"></i>
+                      <span id='number{{tweet.id}}'>{{tweet.like}}</span> 
+                    </div>
+                </div>
+                <div class='dot-area'>
+                    <span id='dots'>...</span>
+                    <div class='opt'>
+                       <form method="POST" action="/delete">{% csrf_token %}
+                           <input type="hidden" name='id' value={{tweet.id}}>
+                           <input class="button" type="submit" value="Delete" />
+                        </form>
+                        <a href="edit/{{tweet.id}}"><button class="button">Edit</button></a>
+                    </div>
+                    
+                </div>
+            </div>
+            {%endfor%}
+        </div>
+<script>
+    function like(id){
+        console.log(id);
+        var Element=document.getElementById('like'+id)
+        Element.style.color='red';
+        var nooflike=document.getElementById('number'+id)
+        console.log(nooflike,nooflike.textContent )
+        if (parseInt(nooflike.textContent)<1)
+           nooflike.textContent =parseInt(nooflike.textContent)+1
+
+    }
+</script>
+    
+</body>
+</html>
